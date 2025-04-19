@@ -16,7 +16,7 @@ public class AccountRepository {
         Account account3 = new Account(642, "SAVINGS", 32100.0);
         Account account4 = new Account(743, "CURRENT", 67000.0);
         Account account5 = new Account(216, "DEMAT", 3300.0);
-        list = mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+        list = Arrays.asList(account1,account2,account3,account4,account5);
     }
 
     public List<Account> getList() {

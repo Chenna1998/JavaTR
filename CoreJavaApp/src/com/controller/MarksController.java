@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.exception.MarksException;
 import com.service.MarksService;
 
 import java.util.Scanner;
@@ -19,11 +20,17 @@ public class MarksController {
 
         /*  reachout to service layer*/
         MarksService marksService = new MarksService();
-        String grade = marksService.computePercentage(marks);
+        String grade = null;
+        try {
+            grade = marksService.computePercentage(marks);
+            /* O/P */
+            System.out.print("Grade is "+ grade);
+        } catch (MarksException e) {
+            System.out.println(e.getMessage());
+        }
 
 
-        /* O/P */
-        System.out.print("Grade is "+ grade);
+
         scanner.close();
     }
 }

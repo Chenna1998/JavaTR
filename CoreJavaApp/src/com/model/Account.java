@@ -36,7 +36,7 @@ public class Account {
     }
 
     @Override
-    public String mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmtoString() {
+    public String toString() {
         return "Account{" +
                 "id=" + id +
                 ", type='" + type + '\'' +

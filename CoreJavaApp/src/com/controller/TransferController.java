@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.exception.TransferException;
 import com.service.TransferService;
 
 import java.util.Scanner;
@@ -15,9 +16,14 @@ public class TransferController {
         double amount = scanner.nextDouble();
         //reachout to service
         TransferService transferService = new TransferService();
-        boolean isSuccess = transferService.transfer(senderId, receiverId, amount);
-        //output
-        System.out.println(isSuccess?"Transfer Successful": "Transfer Failed");
+        try {
+           transferService.transfer(senderId, receiverId, amount);
+            //output
+            System.out.println("Transfer Successful");
+        } catch (TransferException e) {
+            System.out.println(e.getMessage());
+        }
+
         scanner.close();
     }
 }

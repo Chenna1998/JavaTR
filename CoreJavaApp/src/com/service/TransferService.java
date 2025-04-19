@@ -1,6 +1,7 @@
 package com.service;
 
 import com.core.TransferBalance;
+import com.exception.TransferException;
 import com.model.Account;
 import com.repository.AccountRepository;
 
@@ -9,6 +10,7 @@ import java.util.List;
 public class TransferService extends TransferBalance {
 
     AccountRepository accountRepository = new AccountRepository();
+
     @Override
     public boolean validateBalance(Account account) {
         if (account.getBalance() > 0)
@@ -36,51 +38,47 @@ public class TransferService extends TransferBalance {
         receiver.setBalance(receiver.getBalance() + amount);
     }
 
-    public boolean transfer(int senderId, int receiverId, double amount) {
-        boolean isSuccess = true;
+    public void transfer(int senderId, int receiverId, double amount) throws TransferException {
+
         //fetching account object details based on id
         List<Account> list = accountRepository.getList();
-        System.out.println(receiverId);
 
         Account senderAccount = null;
-        for(Account a : list){
-            if(a.getId() == senderId){
+        for (Account a : list) {
+            if (a.getId() == senderId) {
                 senderAccount = a;
-                isSuccess = true;
                 break;
             }
-            else{
-                isSuccess= false;
-            }
         }
+        //if senderaccount is still null after going thru this entire for loop then ID is invalid
+        if (senderAccount == null)
+            throw new TransferException("SenderAccount id not valid");
         Account receiverAccount = null;
-        for(Account a : list){
-            if(a.getId() == receiverId){
+        for (Account a : list) {
+            if (a.getId() == receiverId) {
                 receiverAccount = a;
-                isSuccess = true;
                 break;
             }
-            else{
-                isSuccess= false;
-            }
         }
-mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm        boolean status = validateBalance(senderAccount);
-        if(status == false)
-            isSuccess= false;
-
-        status = validateInfo(senderAccount);
-        if(status == false)
-            isSuccess= false;
-
-        status = validateInfo(receiverAccount);
-        if(status == false)
-            isSuccess= false;
-
-        status = validateTransferAmount(senderAccount, amount);
-        if(status == false)
-            isSuccess= false;
-
+        //if receiveraccount is still null after going thru this entire for loop then ID is invalid
+        if (receiverAccount == null)
+            throw new TransferException("ReceiverAccount id not valid");
+       //after validatebalance check is still false, i will throw exception
+        if (validateBalance(senderAccount) == false) {
+            throw new TransferException("Sender account balance is low");
+        }
+        //after validateinfo check of sender is still false, i will throw exception
+        if (validateInfo(senderAccount) == false) {
+            throw new TransferException("Sender account is neither SAVINGS nor CURRENT");
+        }
+        //after validateinfo check of receriver is still false, i will throw exception
+        if (validateInfo(receiverAccount) == false) {
+            throw new TransferException("receiver account neither SAVINGS nor CURRENT");
+        }
+        //after validatetransferamount check is still false, i will throw exception
+        if (validateTransferAmount(senderAccount, amount) == false) {
+            throw new TransferException("Transfer amount is greater than the sender balance");
+        }
         transferAmount(senderAccount, receiverAccount, amount);
-        return isSuccessmmmmmmmmmmmmmmmmmmmmmmmm;
     }
 }
