@@ -7,7 +7,7 @@ import com.repository.AccountRepository;
 
 import java.util.List;
 
-public class TransferService extends TransferBalance {
+public class TransferService implements TransferBalance {
 
     AccountRepository accountRepository = new AccountRepository();
 
