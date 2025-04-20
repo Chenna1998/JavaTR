@@ -1,6 +1,11 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+package com.repository;
+
+import com.model.Employee;
+
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EmployeeRepository {
 
@@ -16,17 +21,17 @@ public class EmployeeRepository {
         /* Step 1: Load the driver */
         try {
             Class.forName(driver);
-            System.out.println("Driver loaded.. ");
+           // System.out.println("Driver loaded.. ");
         } catch (ClassNotFoundException e) {
-            System.out.println("Driver loading error..." + e.getMessage());
+           // System.out.println("Driver loading error..." + e.getMessage());
         }
 
         // Step 2: Establish the connection
         try {
             conn =   DriverManager.getConnection(url + dbName, userDB, passDB);
-            System.out.println("Connection Successful");
+           // System.out.println("Connection Successful");
         } catch (SQLException e) {
-            System.out.println("Connection Issue..." + e.getMessage());
+           // System.out.println("Connection Issue..." + e.getMessage());
         }
         return conn;
     }
@@ -34,15 +39,50 @@ public class EmployeeRepository {
     public void dbClose() {
         try {
             conn.close();
-            System.out.println("Conn close successful");
+           // System.out.println("Conn close successful");
         } catch (SQLException e) {
-            System.out.println("conn close error..." + e.getMessage());
+           // System.out.println("conn close error..." + e.getMessage());
         }
     }
 
-    public static void main(String[] args) {
-        EmployeeRepository employeeRepository = new EmployeeRepository();
-        employeeRepository.dbConnect();
-        employeeRepository.dbClose();
+    public void insertEmployee(Employee employee) throws SQLException {
+        dbConnect();
+        String sql = "insert into employee(name,salary,city,department,date_of_joining) values (?,?,?,?,?)" ;
+        //Prepare the Statement
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        //Assign Values to Placeholders(?)
+        pstmt.setString(1, employee.getName());
+        pstmt.setDouble(2, employee.getSalary());
+        pstmt.setString(3, employee.getCity());
+        pstmt.setString(4, employee.getDepartment());
+        pstmt.setString(5, employee.getDateOfJoining().toString());
+        //Execute Statement
+        pstmt.executeUpdate();
+        dbClose();
+    }
+
+    public List<Employee> fetchAllEmployee() throws SQLException {
+        dbConnect();
+        ArrayList<Employee> list = new ArrayList<>();
+        String sql = "select * from employee" ;
+        //Prepare the Statement
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        //Execute Statement
+        ResultSet rst = pstmt.executeQuery();
+        while(rst.next()){
+            int id = rst.getInt("id");
+            String name = rst.getString("name");
+            double salary = rst.getDouble("salary");
+            String city = rst.getString("city");
+            String department = rst.getString("department");
+            LocalDate dateOfJoining = LocalDate.parse(rst.getString("date_of_joining"));
+
+            Employee employee = new Employee(id,name,city,department,salary,dateOfJoining);
+            list.add(employee);
+        }
+        dbClose();
+        return list;
     }
 }
+//executeQuery(): fetch-select
+//executeUpdate(): update, insert , delete
