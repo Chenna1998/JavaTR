@@ -6,7 +6,7 @@ import java.util.*;
 
 public class LisOfObjectsDemo {
     public static void main(String[] args) {
-        List<Employee> list = new ArrayList();
+        List<Employee> list = new LinkedList<>();
         Employee employee1 = new Employee(1,"rev","CS","HYD",34000);
         Employee employee2 = new Employee(2,"che","EE","DFW",13000);
         Employee employee3 = new Employee(3,"ghsd","ITM","PHX",90000);
@@ -60,7 +60,6 @@ class B implements Comparator<Employee>{
     }
 }
 class C implements Comparator<Employee>{
-
     @Override
     public int compare(Employee e1, Employee e2) {
        return e1.getCity().compareTo(e2.getCity());
